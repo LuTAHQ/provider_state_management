@@ -1,79 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:state_management_provider/models/task_data.dart';
 
+import 'models/task.dart';
+import 'models/task1.dart';
 import 'screens/task_screen.dart';
 
-void main() {
-  runApp(
-      // ChangeNotifierProvider(create: (_) => Counter(),
-      const MyApp());
+void main() async {
+  await Hive.initFlutter();
+  await Hive.openBox<Task>('tasksBox');
+  // Hive.registerAdapter(TaskAdapter());
+  Hive.registerAdapter(Task1Adapter());
+
+  runApp(const MyApp());
+
+  Hive.close();
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  TaskData taskData = TaskData();
+  @override
+  void initState() {
+    super.initState();
+    print("initState main");
+    
+  }
+
+
+// Box<Task> todosBox;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return ListenableProvider(
+      create: (BuildContext context) {
+        return TaskData();
+      },
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const TaskScreen(),
       ),
-      home: const TaskScreen(),
     );
   }
 }
-
-// class MyHomePage extends StatefulWidget {
-//   const MyHomePage({super.key, required this.title});
-
-//   final String title;
-
-//   @override
-//   State<MyHomePage> createState() => _MyHomePageState();
-// }
-
-// class _MyHomePageState extends State<MyHomePage> {
-//   int _counter = 0;
-
-//   void _incrementCounter() {
-//     setState(() {
-//       _counter++;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-//         title: Text(widget.title),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             Consumer<Counter>(
-//               builder: (context, counter, _) => Text(
-//                 'You have pushed the button this many times: ${counter.count}',
-//               ),
-//             ),
-//             // Text(
-//             //   '$_counter',
-//             //   style: Theme.of(context).textTheme.headlineMedium,
-//             // ),
-//           ],
-//         ),
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () {
-//           context.read<Counter>().increment();
-//         },
-//         tooltip: 'Increment',
-//         child: const Icon(Icons.add),
-//       ), // This trailing comma makes auto-formatting nicer for build methods.
-//     );
-//   }
-// }

@@ -5,12 +5,14 @@ class TaskTile extends StatelessWidget {
     super.key,
     required this.taskTitle,
     required this.isChecked,
-    required this.toggleCheckboxState
+    required this.toggleCheckboxState,
+    required this.longPressCallback
   });
 
-  final bool isChecked;
+  final bool isChecked; 
   final String taskTitle;
   final void Function(bool?)? toggleCheckboxState;
+  final void Function()? longPressCallback;
 
   // void toggleCheckboxState(bool? toggleCheckboxState) {
   //   setState(() {
@@ -21,6 +23,7 @@ class TaskTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onLongPress: longPressCallback,
       title: Text(
         taskTitle,
         style: TextStyle(
@@ -29,29 +32,9 @@ class TaskTile extends StatelessWidget {
       trailing: Checkbox(
         checkColor: Colors.lightBlueAccent,
         value: isChecked,
-        onChanged: toggleCheckboxState
+        onChanged: toggleCheckboxState,
+        
       ),
     );
   }
 }
-
-// (bool? toggleCheckboxState) {
-//           setState(() {
-//             isChecked = toggleCheckboxState!;
-//           });
-//         }
-
-
-
-
-/////           ListScreen
-///
-///
-///AddTaskScreen               TaskList
-///
-///
-///
-///                             TaskTile
-/// 
-/// 
-///                     checkbox             Text (title of the task)
